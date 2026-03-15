@@ -1,0 +1,57 @@
+syntax = "proto3";
+package auth;
+
+option java_multiple_files = true;
+option java_package = "com.vadim.grpc.authservice.proto";
+option java_outer_classname = "AuthProto";
+
+service AuthService {
+  rpc Register (RegisterRequest) returns (AuthResponse);
+  rpc Authenticate (AuthRequest) returns (AuthResponse);
+  rpc RequestPasswordReset (RequestResetRequest) returns (EmptyResponse);
+  rpc ResetPassword (ResetPasswordRequest) returns (AuthResponse);
+  rpc RefreshToken (RefreshRequest) returns (AuthResponse);
+  rpc GetUser (GetUserRequest) returns (UserDto);
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message RequestResetRequest {
+  string email = 1;
+}
+
+message ResetPasswordRequest {
+  string email = 1;
+  string token = 2;
+  string newPassword = 3;
+}
+
+message RefreshRequest {
+  string refreshToken = 1;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message AuthResponse {
+  string accessToken = 1;
+  string refreshToken = 2;
+  string userId = 3;
+}
+
+message UserDto {
+  string id = 1;
+  string email = 2;
+  bool confirmed = 3;
+}
+
+message EmptyResponse {}

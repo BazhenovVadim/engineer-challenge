@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+  auth-service:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/authdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      JWT_SECRET: changeme_should_be_secure
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "8080:8080"
+      - "9090:9090" # gRPC port
+
+volumes:
+  pgdata:
+    name: auth-postgres-data
